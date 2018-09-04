@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from "axios"
 import './HistoryModal.css';
 
 export default class HistoryModal extends Component {
@@ -9,15 +10,27 @@ export default class HistoryModal extends Component {
     };
   }
 
+  componentDidMount() {
+    axios.get("/api/messages/history")
+    .then(res => this.setState({historyMessages: res.data}))
+  }
+
   render() {
-    let historyMessages = this.state.historyMessages.map((messageObj, i) => {
-      return (
-        <div className="message" key={i}>
-          <span>{messageObj.username}</span>
-          <span>{messageObj.message}</span>
-        </div>
-      );
-    });
+    if(this.state.historyMessages.length > 0) {
+      var historyMessages = this.state.historyMessages.map((messageObj, i) => {
+        return (
+          <div className="message" key={i}>
+            <span>{messageObj.username}</span>
+            <span>{messageObj.message}</span>
+          </div>
+        );
+      });
+    }
+    else {
+      var historyMessages = <div className="message">
+        <span>No Messages</span>
+      </div>
+    }
 
     return (
       <section className="modal-wrapper">
